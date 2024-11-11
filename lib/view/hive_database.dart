@@ -55,7 +55,28 @@ class _HiveDatabaseState extends State<HiveDatabase> {
                 const SizedBox(
                   height: 15,
                 ),
-                ElevatedButton(onPressed: () {}, child: const Text("Save"))
+                ElevatedButton(
+                    onPressed: () {
+                      final name = _nameController.text;
+                      final age = int.parse(_nameController.text);
+                      if (name.isEmpty || age == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Enter name or age"),
+                          ),
+                        );
+                        return;
+                      }
+                      if (key == null) {
+                        final newKey =
+                            DateTime.now().microsecondsSinceEpoch.toString();
+                        dataStorageBox.put(newKey, {"name": name, "age": age});
+                      } else {
+                        dataStorageBox.put(key, {"name": name, "age": age});
+                      }
+                      Navigator.pop(context);
+                    },
+                    child: Text(key == null ? "Add" : "Update"))
               ],
             ),
           );
@@ -79,6 +100,26 @@ class _HiveDatabaseState extends State<HiveDatabase> {
           color: Colors.white,
           size: 30,
         ),
+      ),
+      body: ValueListenableBuilder(
+        valueListenable: dataStorageBox.listenable(),
+        builder: (BuildContext context, value, Widget? child) {
+          if (value.isEmpty) {
+            return const Center(
+              child: Text("No items added yet."),
+            );
+          }
+          return ListView.builder(itemBuilder: (context, index) {
+            final key = value.keyAt(index).toString();
+            final items = value.get(key);
+            return Padding(
+              padding: const EdgeInsets.all(10),
+              child: ListTile(
+                title: Text(items?["name"] ?? "Unknown"),
+              ),
+            );
+          });
+        },
       ),
     );
   }

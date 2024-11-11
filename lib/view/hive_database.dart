@@ -32,6 +32,34 @@ class _HiveDatabaseState extends State<HiveDatabase> {
       _nameController.clear();
       _ageController.clear();
     }
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 15,
+                right: 15,
+                top: 15),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: "Enter name"),
+                ),
+                TextField(
+                  controller: _ageController,
+                  decoration: const InputDecoration(labelText: "Enter name"),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                ElevatedButton(onPressed: () {}, child: const Text("Save"))
+              ],
+            ),
+          );
+        });
   }
 
   @override
